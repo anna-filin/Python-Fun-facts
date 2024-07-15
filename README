@@ -1,0 +1,16 @@
+Install Flask and BeaitufulSoul
+pip install flask
+pip install beautifulsoup4
+pip install requests
+
+Create the Flask app: app.py (code from set)
+
+Run python app.py
+
+Access the Website with fun facts: Open your web browser and go to http://127.0.0.1:5000/
+
+Flask: This is a lightweight WSGI web application framework in Python.
+BeautifulSoup and Requests: These libraries are used to scrape online content.
+local_facts: A list of local fun facts.
+get_online_fun_fact(): This function scrapes fun facts from an online source.
+home(): This is the route for the home page. It randomly selects whether to show a local or an online fun fact.
