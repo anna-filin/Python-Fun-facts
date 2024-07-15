@@ -1,0 +1,55 @@
+from flask import Flask, render_template_string
+import random
+import requests
+from bs4 import BeautifulSoup
+
+app = Flask(__name__)
+
+# A list of local fun facts
+local_facts = [
+    "Bananas are berries, but strawberries aren't.",
+    "Honey never spoils.",
+    "A group of flamingos is called a 'flamboyance.'",
+    "A shrimp's heart is in its head.",
+    "A snail can sleep for three years."
+]
+
+def get_online_fun_fact():
+    try:
+        response = requests.get("https://www.thefactsite.com/1000-interesting-facts/")
+        soup = BeautifulSoup(response.content, 'html.parser')
+        facts = soup.select('li')  # Assuming facts are in list items
+        online_facts = [fact.get_text() for fact in facts if fact.get_text() != '']
+        return random.choice(online_facts)
+    except Exception as e:
+        return f"Error fetching online fun fact: {str(e)}"
+
+@app.route('/')
+def home():
+    fact_source = random.choice(['local', 'online'])
+    if fact_source == 'local':
+        fact = random.choice(local_facts)
+    else:
+        fact = get_online_fun_fact()
+
+    html = f'''
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Random Fun Fact</title>
+      </head>
+      <body>
+        <div style="text-align: center; margin-top: 50px;">
+          <h1>Did you know?</h1>
+          <p>{fact}</p>
+          <button onclick="window.location.reload();">Show Another Fun Fact</button>
+        </div>
+      </body>
+    </html>
+    '''
+    return render_template_string(html)
+
+if __name__ == '__main__':
+    app.run(debug=True)
